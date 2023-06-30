@@ -6,13 +6,23 @@ vim.optは[option object]を返す
 ]]
 vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
+
+-- ファイルエンコード自動判別機能
+vim.opt.fileencodings = "iso-2022-jp,euc-jp,sjis,utf-8"
+
+-- 改行コード自動認識順番
+vim.opt.fileformats = "unix,dos,mac"
+
 vim.opt.clipboard:append{'unnamedplus'}
 vim.opt.helplang = "ja", "en"
 vim.opt.mouse = "a"
 vim.opt.number = true
 vim.opt.showtabline = 2
+
+-- 不可視文字設定
 vim.opt.list = true
-vim.opt.listchars = 'eol:$,tab:>>,trail:-,nbsp:+'
+vim.opt.listchars = "eol:$,tab:>-,trail:_,nbsp:+"
+
 vim.opt.cursorline = false
 vim.opt.cursorcolumn = false
 vim.opt.backup = false
@@ -37,9 +47,9 @@ vim.opt.visualbell = true
 vim.opt.autoindent = true
 vim.opt.smartindent = true
 
--- neovim-qt font
-vim.opt.guifont = { "HackGen Console NF:h12" }
-vim.opt.guifontwide = { "HackGen Console NF:h13" }
+-- GUI Only
+vim.opt.guifont = { "HackGen35 Console NF:h11" }
+vim.opt.guifontwide = { "HackGen35 Console NF:h11" }
 
 --[[
 keymaps
@@ -415,5 +425,20 @@ else " wsl neovim
 	autocmd CmdlineLeave * :call system('${zenhan} 0')
 endif
 ]]
+
+--[[
+全角スペースをハイライト表示
+]]
+vim.api.nvim_create_augroup('extra-whitespace', {})
+vim.api.nvim_create_autocmd({'VimEnter', 'WinEnter'}, {
+  group = 'extra-whitespace',
+  pattern = {'*'},
+  command = [[call matchadd('ExtraWhitespace', '[\u200B\u3000]')]]
+})
+vim.api.nvim_create_autocmd({'ColorScheme'}, {
+  group = 'extra-whitespace',
+  pattern = {'*'},
+  command = [[highlight default ExtraWhitespace ctermbg=202 ctermfg=202 guibg=salmon]]
+})
 
 print('end of init.lua!')

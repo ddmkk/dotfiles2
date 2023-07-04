@@ -92,12 +92,23 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
+-- set file type Markdown
+vim.api.nvim_create_autocmd("BufNewFile,BufRead", {
+  pattern = "*.{md,mdwn,mkd,mkdn,mark*}",
+  command = "set filetype=markdown"
+})
+
 --[[
 ユーザー定義関数
 ]]
 vim.api.nvim_create_user_command('Here', 'cd %:h', {})
 
--- plugins
+--[[
+@@@@@@@@@@@@@@@@@@@@
+プラグイン
+@@@@@@@@@@@@@@@@@@@@
+]]
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -112,13 +123,17 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
+
   -- utility
   "nvim-lua/plenary.nvim",
+
   -- color
   "EdenEast/nightfox.nvim",
-  -- "folke/tokyonight.nvim",
-  -- help
+  "folke/tokyonight.nvim",
+
+  -- help 日本語化
   "vim-jp/vimdoc-ja",
+
   -- comment
   {
     "numToStr/Comment.nvim",
@@ -126,15 +141,26 @@ require('lazy').setup({
       require('Comment').setup()
     end
   },
+
   -- emmet
   {
     "mattn/emmet-vim",
     lazy = true,
     event = 'InsertEnter',
     config = function()
-      vim.g.user_emmet_leader_key='<C-e>'
+      -- vim.g.user_emmet_leader_key='<C-e>'
+      -- vim.g.user_emmet_leader_key = '<C-e>'
+      -- vim.g.user_emmet_settings = {
+      --   variables = {
+      --     lang = 'ja',
+      --   },
+      --   html = {
+      --     comment_type = 'lastonly'
+      --   }
+      -- }
     end
   },
+
   -- statusline
   {
     "nvim-lualine/lualine.nvim",
@@ -142,13 +168,17 @@ require('lazy').setup({
       require('lualine').setup()
     end
   },
+
   -- tabs
   {
     "kdheepak/tabline.nvim",
     config = function()
       require('tabline').setup()
+      vim.keymap.set("n", "<C-Right>", ":bnext<CR>")
+      vim.keymap.set("n", "<C-Left>", ":bprevious<CR>")
     end
   },
+
   -- indent
   {
     "echasnovski/mini.indentscope",
@@ -158,6 +188,7 @@ require('lazy').setup({
       })
     end
   },
+
   -- # インデント箇所で文字に不具合
   -- {
   --   "lukas-reineke/indent-blankline.nvim",
@@ -168,11 +199,14 @@ require('lazy').setup({
   --     }
   --   end
   -- },
-  --Icon
+
+  -- icons
   {"nvim-tree/nvim-web-devicons", lazy = true},
+
   -- telescope ファジーファインダー
   {"nvim-telescope/telescope.nvim"},
   {"nvim-telescope/telescope-file-browser.nvim"},
+
   -- cmp 補完
   { "neovim/nvim-lspconfig" },
   { "williamboman/mason.nvim" },
@@ -185,8 +219,19 @@ require('lazy').setup({
   { "hrsh7th/cmp-vsnip" },
   { "hrsh7th/vim-vsnip" },
   { "yutkat/cmp-mocword" },
-  -- tree-sitter シンタックスハイライト
+
+  -- tree-sitter
   { "nvim-treesitter/nvim-treesitter" },
+
+  -- syntax stylus
+  "vio/vim-stylus",
+
+  -- syntax pug
+  "seletskiy/vim-pug",
+
+  -- syntax nunjucks
+  "Glench/Vim-jinja2-Syntax",
+
   -- filer
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -196,7 +241,8 @@ require('lazy').setup({
       "MunifTanjim/nui.nvim",
     }
   },
-  --mark
+
+  -- mark
   {
     "chentoast/marks.nvim",
     config = function()
@@ -206,15 +252,30 @@ require('lazy').setup({
       }
     end
   },
-  -- stylus
-  "vio/vim-stylus",
-  -- pug
-  "seletskiy/vim-pug",
-  -- nunjucks
-  "Glench/Vim-jinja2-Syntax"
+
+  -- Preview Markdown
+  {
+    "kannokanno/previm",
+    dependencies = {
+      "tyru/open-browser.vim",
+    },
+    lazy = false,
+    config = function()
+      vim.g.previm_open_cmd=''
+      -- リアルタイムで反映
+      vim.g.previm_enable_realtime = 1
+      vim.keymap.set("n", "<space>po", ":<C-u>PrevimOpen<CR>")
+    end
+  }
 })
 
--- emmet
+--[[
+@@@@@@@@@@@@@@@@@@@@@@@@@@@
+プラグイン設定
+@@@@@@@@@@@@@@@@@@@@@@@@@@@
+]]
+
+-- Emmet
 vim.g.user_emmet_leader_key = '<C-e>'
 vim.g.user_emmet_settings = {
   variables = {
@@ -224,11 +285,6 @@ vim.g.user_emmet_settings = {
     comment_type = 'lastonly'
   }
 }
-
-
--- tabline
-vim.keymap.set("n", "<C-Right>", ":bnext<CR>")
-vim.keymap.set("n", "<C-Left>", ":bprevious<CR>")
 
 
 -- telescope-file-browser
@@ -408,6 +464,7 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
+
 -- colorscheme
 vim.cmd [[colorscheme nightfox]]
 -- vim.cmd [[colorscheme tokyonight]]
@@ -440,5 +497,13 @@ vim.api.nvim_create_autocmd({'ColorScheme'}, {
   pattern = {'*'},
   command = [[highlight default ExtraWhitespace ctermbg=202 ctermfg=202 guibg=salmon]]
 })
+
+--[[
+%での移動を強化
+HTMLで対応するタグにジャンプ可能に
+]]
+vim.cmd[[
+source $VIMRUNTIME/macros/matchit.vim
+]]
 
 print('end of init.lua!')

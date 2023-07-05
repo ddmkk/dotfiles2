@@ -13,11 +13,25 @@ vim.opt.fileencodings = "iso-2022-jp,euc-jp,sjis,utf-8"
 -- 改行コード自動認識順番
 vim.opt.fileformats = "unix,dos,mac"
 
+-- 端末のクリップボード使用
 vim.opt.clipboard:append{'unnamedplus'}
 vim.opt.helplang = "ja", "en"
 vim.opt.mouse = "a"
 vim.opt.number = true
 vim.opt.showtabline = 2
+vim.opt.ruler = true
+
+-- 検索キーワードハイライト
+vim.opt.hlsearch = true
+
+-- 検索ワードの最初の文字を入力した段階で検索を開始
+vim.opt.incsearch = true
+
+-- 小文字のみで検索したときに大文字小文字を無視する
+vim.opt.smartcase = true
+
+-- 長い行でのカーソル移動が重くなる現象対策
+vim.syncmaxcol = 200
 
 -- 不可視文字設定
 vim.opt.list = true
@@ -134,7 +148,7 @@ require('lazy').setup({
   -- help 日本語化
   "vim-jp/vimdoc-ja",
 
-  -- comment
+  -- コメント
   {
     "numToStr/Comment.nvim",
     config = function()
@@ -142,7 +156,7 @@ require('lazy').setup({
     end
   },
 
-  -- emmet
+  -- Emmet
   {
     "mattn/emmet-vim",
     lazy = true,
@@ -161,7 +175,7 @@ require('lazy').setup({
     end
   },
 
-  -- statusline
+  -- ステータスライン
   {
     "nvim-lualine/lualine.nvim",
     config = function()
@@ -169,7 +183,7 @@ require('lazy').setup({
     end
   },
 
-  -- tabs
+  -- タブ関連
   {
     "kdheepak/tabline.nvim",
     config = function()

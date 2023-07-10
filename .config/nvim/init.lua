@@ -66,6 +66,24 @@ vim.opt.guifont = { "HackGen35 Console NF:h11" }
 vim.opt.guifontwide = { "HackGen35 Console NF:h11" }
 
 --[[
+Terminal関連
+]]
+-- Termninalをvscodeのように現在のウィンドウの下に開く
+vim.api.nvim_create_autocmd({'TermOpen'}, {
+  command = 'startinsert',
+})
+-- 常にインサートモードで開く（水平分割）
+vim.api.nvim_create_user_command('T', 'sp | wincmd j | resize 10 | terminal <args>', { nargs = '*' })
+vim.keymap.set('n', 'T', ':T<CR>', {noremap = true})
+
+-- 常にインサートモードで開く（垂直分割）
+vim.api.nvim_create_user_command('TS', 'vs | wincmd j | resize 100 | terminal <args>', { nargs = '*' })
+vim.keymap.set('n', 'TS', ':TS<CR>', {noremap = true})
+
+-- インサートモードからの離脱をマッピング
+vim.keymap.set('t', '<space>q', '<C-\\><C-n>', { silent = true })
+
+--[[
 keymaps
 ]]
 vim.g.mapleader = " "
@@ -281,6 +299,7 @@ require('lazy').setup({
       vim.keymap.set("n", "<space>po", ":<C-u>PrevimOpen<CR>")
     end
   }
+
 })
 
 --[[
